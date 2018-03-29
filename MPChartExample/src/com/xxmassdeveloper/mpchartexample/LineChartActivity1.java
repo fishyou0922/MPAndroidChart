@@ -19,6 +19,7 @@ import android.widget.Toast;
 
 import com.github.mikephil.charting.animation.Easing;
 import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.components.AxisBase;
 import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.Legend.LegendForm;
 import com.github.mikephil.charting.components.LimitLine;
@@ -28,6 +29,7 @@ import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
+import com.github.mikephil.charting.formatter.IAxisValueFormatter;
 import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import com.github.mikephil.charting.listener.ChartTouchListener;
@@ -37,6 +39,7 @@ import com.github.mikephil.charting.utils.Utils;
 import com.xxmassdeveloper.mpchartexample.custom.MyMarkerView;
 import com.xxmassdeveloper.mpchartexample.notimportant.DemoBase;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -96,14 +99,19 @@ public class LineChartActivity1 extends DemoBase implements OnSeekBarChangeListe
         mChart.setMarker(mv); // Set the marker to the chart
 
         // x-axis limit line
-        LimitLine llXAxis = new LimitLine(10f, "Index 10");
-        llXAxis.setLineWidth(4f);
-        llXAxis.enableDashedLine(10f, 10f, 0f);
+        LimitLine llXAxis = new LimitLine(0f, "");
+        llXAxis.setLineWidth(1f);
+        //llXAxis.enableDashedLine(10f, 10f, 0f);
+        llXAxis.setLineColor(getResources().getColor(android.R.color.holo_blue_dark));
         llXAxis.setLabelPosition(LimitLabelPosition.RIGHT_BOTTOM);
-        llXAxis.setTextSize(10f);
+        llXAxis.setTextSize(0f);
 
         XAxis xAxis = mChart.getXAxis();
-        xAxis.enableGridDashedLine(10f, 10f, 0f);
+        //xAxis.enableGridDashedLine(10f, 10f, 0f);
+        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+        xAxis.addLimitLine(llXAxis);
+        xAxis.setDrawAxisLine(true);
+        xAxis.setDrawGridLines(false);
         //xAxis.setValueFormatter(new MyCustomXAxisValueFormatter());
         //xAxis.addLimitLine(llXAxis); // add x-axis limit line
 
@@ -117,22 +125,25 @@ public class LineChartActivity1 extends DemoBase implements OnSeekBarChangeListe
         ll1.setTextSize(10f);
         ll1.setTypeface(tf);
 
-        LimitLine ll2 = new LimitLine(-30f, "Lower Limit");
-        ll2.setLineWidth(4f);
-        ll2.enableDashedLine(10f, 10f, 0f);
-        ll2.setLabelPosition(LimitLabelPosition.RIGHT_BOTTOM);
-        ll2.setTextSize(10f);
+        LimitLine ll2 = new LimitLine(0f, "");
+        ll2.setLineWidth(1f);
+        //ll2.enableDashedLine(10f, 10f, 0f);
+        ll2.setLabelPosition(LimitLabelPosition.RIGHT_TOP);
+        ll2.setLineColor(getResources().getColor(android.R.color.holo_blue_dark));
+        ll2.setTextSize(11f);
         ll2.setTypeface(tf);
 
         YAxis leftAxis = mChart.getAxisLeft();
         leftAxis.removeAllLimitLines(); // reset all limit lines to avoid overlapping lines
-        leftAxis.addLimitLine(ll1);
+        //leftAxis.addLimitLine(ll1);
         leftAxis.addLimitLine(ll2);
         leftAxis.setAxisMaximum(200f);
-        leftAxis.setAxisMinimum(-50f);
+        leftAxis.setAxisMinimum(0f);
         //leftAxis.setYOffset(20f);
-        leftAxis.enableGridDashedLine(10f, 10f, 0f);
-        leftAxis.setDrawZeroLine(false);
+        //leftAxis.enableGridDashedLine(10f, 10f, 0f);
+        //leftAxis.setDrawZeroLine(true);
+        leftAxis.setDrawGridLines(false);
+
 
         // limit lines are drawn behind data (and not on top)
         leftAxis.setDrawLimitLinesBehindData(true);
@@ -154,9 +165,10 @@ public class LineChartActivity1 extends DemoBase implements OnSeekBarChangeListe
 
         // get the legend (only possible after setting data)
         Legend l = mChart.getLegend();
+        l.setEnabled(false);
 
         // modify the legend ...
-        l.setForm(LegendForm.LINE);
+        //l.setForm(LegendForm.LINE);
 
         // // dont forget to refresh the drawing
         // mChart.invalidate();
@@ -354,8 +366,8 @@ public class LineChartActivity1 extends DemoBase implements OnSeekBarChangeListe
 
         for (int i = 0; i < count; i++) {
 
-            float val = (float) (Math.random() * range) + 3;
-            values.add(new Entry(i, val, getResources().getDrawable(R.drawable.star)));
+            float val = (float) (Math.random() * range) + 50;
+            values.add(new Entry(i, val));
         }
 
         LineDataSet set1;
@@ -373,10 +385,12 @@ public class LineChartActivity1 extends DemoBase implements OnSeekBarChangeListe
             set1.setDrawIcons(false);
 
             // set the line to be drawn like this "- - - - - -"
-            set1.enableDashedLine(10f, 5f, 0f);
-            set1.enableDashedHighlightLine(10f, 5f, 0f);
-            set1.setColor(Color.BLACK);
-            set1.setCircleColor(Color.BLACK);
+            //set1.enableDashedLine(10f, 5f, 0f);
+            //set1.enableDashedHighlightLine(10f, 5f, 0f);
+            set1.setMode(LineDataSet.Mode.CUBIC_BEZIER);
+            set1.setDrawValues(false);
+            set1.setColor(Color.RED);
+            set1.setDrawCircles(false);
             set1.setLineWidth(1f);
             set1.setCircleRadius(3f);
             set1.setDrawCircleHole(false);
@@ -385,6 +399,37 @@ public class LineChartActivity1 extends DemoBase implements OnSeekBarChangeListe
             set1.setFormLineWidth(1f);
             set1.setFormLineDashEffect(new DashPathEffect(new float[]{10f, 5f}, 0f));
             set1.setFormSize(15.f);
+            mChart.getAxisLeft().setValueFormatter(new IAxisValueFormatter() {
+                @Override
+                public String getFormattedValue(float value, AxisBase axis) {
+                    DecimalFormat decimalFormat = new DecimalFormat("##");
+                    int dataValue = Integer.parseInt(decimalFormat.format(value));
+                    Log.d("TAG", String.valueOf(dataValue));
+                    if (dataValue > 0) {
+
+                        return String.valueOf(dataValue);
+                    } else {
+                        return "";
+                    }
+                }
+            });
+            mChart.getXAxis().setValueFormatter(new IAxisValueFormatter() {
+                @Override
+                public String getFormattedValue(float value, AxisBase axis) {
+
+                    DecimalFormat decimalFormat = new DecimalFormat("##");
+                    int dataValue = Integer.parseInt(decimalFormat.format(value));
+                    Log.d("TAG", String.valueOf(dataValue));
+                    if (dataValue > 0) {
+
+                        return String.valueOf(dataValue);
+                    } else {
+                        return "公里";
+                    }
+                }
+            });
+
+
 
             if (Utils.getSDKInt() >= 18) {
                 // fill drawable only supported on api level 18 and above
